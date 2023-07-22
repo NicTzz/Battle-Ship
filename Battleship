@@ -1,0 +1,71 @@
+import random
+
+rows = 8
+cols = 8
+ships = []
+guesses = []
+
+def create_empty_grid(rows, cols):
+    global grid
+    grid = [['O']*rows for i in range(cols)]
+    for i in grid:
+        print(' '.join(i))
+
+
+
+def guess(row, col):
+    global number_of_ships, tries
+    if row < 0 or row > rows or col < 0 or col > cols:
+        print("That's not even in the Ocean! Please try again sir!")
+        return
+    if [row, col] in guesses:
+        print("You have already guessed this coordinate!")
+        return
+    if [row, col] in ships:
+        guesses.append([row, col])
+        number_of_ships -= 1
+        if number_of_ships == 1:
+            print("Last One!")
+        elif number_of_ships == 0:
+            print("----------------")
+            return
+        else:
+            print("One ship down, {} left to go".format(number_of_ships))
+    else:
+        print("Missed")
+    grid[int(row)-1][int(col)-1] = "X"
+    tries -= 1
+    for i in grid:
+        print(' '.join(i))
+
+
+#main
+
+#validate tries and ships
+tries = int(input("Number of Tries: "))
+if tries > (rows*cols) and tries < 1:
+    print("Input within the range of the board please.")
+    tries = int(input("Number of Tries: "))
+
+number_of_ships = int(input("Number of Ships: "))
+if number_of_ships > (rows*cols) and number_of_ships < 1:
+    print("Input within the range please of the board please.")
+    tries = int(input("Number of Ships"))
+
+for _ in range(number_of_ships):
+    ship_row, ship_column = random.randint(1,rows), random.randint(1,rows)
+    ships.append([ship_row, ship_column])
+
+print(ships)
+create_empty_grid(rows, cols)
+
+while tries > 0:
+    row = int(input("ENTER ROW:"))
+    col = int(input("ENTER COLUMN:"))
+    guess(row, col)
+    if number_of_ships == 0:
+        print("Congratulations! You have hit all the enemy ships!")
+        break
+
+if tries == 0:
+    print("Pull yourself together captain! The enemy ship has already fled!")
